@@ -1,0 +1,41 @@
+body{
+  margin:0;
+  padding:0;
+}
+
+.bottom {
+  bottom: 45px;
+  right: 24px;
+}
+
+.bottom2 {
+  bottom: 45px;
+  right: 154px;
+}
+
+.main {
+  z-index: 1;
+}
+
+.with-scroll {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+  width: 0.2em;
+  height: 0.2em;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #5A5A5A;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8A8A8A;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  background: rgba(100, 100, 100, 0.15);
+}

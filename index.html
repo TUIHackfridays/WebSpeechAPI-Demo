@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Speech to Text Demo</title>
+
+  <link rel="shortcut icon" type="image/x-icon" href="./img/favicon.ico"/>
+  <link href="./styles/materialize.min.css" rel="stylesheet" type="text/css">
+  <link href="./styles/icon.css" rel="stylesheet" type="text/css">
+  <link href="./styles/app.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <main class="container">
+    <h1 class="header center red-text">Speech to Text Demo</h1>
+    <div class="row center">
+      <div class="input-field col s12">
+        <select id="langs">
+        </select>
+        <label>Language</label>
+      </div>
+      <i id="icon" class="large material-icons red-text text-darken-4">fiber_manual_record</i>
+      <ul class="collection with-header">
+          <li class="collection-header"><h4>Results</h4></li>
+          <div id="finals" class="with-scroll"></div>
+        </ul>
+      <div class="fixed-action-btn bottom">
+        <button id="button-play" class="waves-effect waves-light btn-large red" data-muted="false">Start Listening</button>
+      </div>
+    </div>
+  </main>
+  <script src="./scripts/jquery.min.js"></script>
+  <script src="./scripts/materialize.min.js"></script>
+  <script src="./scripts/app.js"></script>
+</body>
+</html>
