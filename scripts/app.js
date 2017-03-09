@@ -189,6 +189,7 @@ function startSpeechRecognier(auto){
 }
 
 function showResult(command) {
+  // show the result in the page
   var finals = document.getElementById('finals');
   finals.innerHTML += '<li class="collection-item">' + command + '</li>';
   // scroll to bottom after adding the text
@@ -196,6 +197,7 @@ function showResult(command) {
 }
 
 function loadLanguages() {
+  // add the lanaguages to the page
   var select = document.getElementById("langs");
   for (var lang in langs) {
     if (langs.hasOwnProperty(lang)) {
@@ -211,6 +213,7 @@ function loadLanguages() {
 // ----------------- INIT -------------------------
 
 function init() {
+  // initialize speechRecognition if supported
   if(SpeechRecognition === null){
     alert("Web Speech API is not supported.");
   } else {
