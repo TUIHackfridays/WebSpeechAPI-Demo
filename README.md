@@ -1,7 +1,7 @@
-# WebSpeechAPI-Demo
+# Web Speech API Demo
 
 # Run demo
 In the root directory run the command:
 ```javascript
-$ python -m SimpleHTTPServer 3000 .
+$ python -m SimpleHTTPServer 3000
 ```
