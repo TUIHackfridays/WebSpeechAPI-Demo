@@ -147,6 +147,11 @@ function startSpeechRecognier(auto){
         // send to dom
         showResult(finalText.join(', '));
         console.log("final result:", finalText);
+        document.getElementById('partials').innerHTML = "...";
+      } else {
+        // got partial result
+        document.getElementById('partials').innerHTML = event.results[i][0].transcript;
+        console.log("Partial:", event.results[i][0].transcript, event.results[i].length);
       }
     }
   };
