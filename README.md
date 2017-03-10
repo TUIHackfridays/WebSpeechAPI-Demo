@@ -1,7 +1,7 @@
 # Web Speech API Demo
 
 The Web Speech API has two parts: `SpeechSynthesis` (Text-to-Speech - TTS) and `SpeechRecognition` (Speech-to-Text - STT).
-This demo only explores the STT part.
+**This demo only explores the STT part.**
 
 Read more about this [here](./web_speech_api.md)
 
