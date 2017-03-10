@@ -99,14 +99,16 @@ function startSpeechRecognier(auto){
 
   recognizer.onstart = function() {
     // listening started
-    console.log("started");
+    console.log("onstart");
+    $.notify("Called 'onstart': started listening", "success");
     document.getElementById('icon').className += " green-text text-darken-2";
     document.getElementById('icon').className = document.getElementById('icon').className.replace( /(?:^|\s)red-text text-darken-4(?!\S)/g , '' );
   };
 
   recognizer.onend = function() {
     // listening ended
-    console.log("ended");
+    console.log("onend");
+    $.notify("Called 'onend': stopped listening", "warn");
     document.getElementById('icon').className += " red-text text-darken-4";
     document.getElementById('icon').className = document.getElementById('icon').className.replace( /(?:^|\s)green-text text-darken-2(?!\S)/g , '' );
     if(state.listening) {
@@ -115,20 +117,26 @@ function startSpeechRecognier(auto){
   };
 
   recognizer.onerror = function(error) {
-    // an error occured
-    console.log(error);
+    // an error occurred
+    console.log("onerror:", error);
+    $.notify("Called 'onerror': an error occured", "error");
   };
 
   recognizer.onspeechstart = function() {
+    // detected sound that looks like speech
     console.log('Speech has been detected');
-  }
+    $.notify("Called 'onspeechstart': detected speech", "info");
+  };
 
   recognizer.onspeechend = function() {
+    // stopped detecting speech
     console.log('Speech has stopped being detected');
-  }
+    $.notify("Called 'onspeechend': stopped detecting speech", "info");
+  };
 
 
   recognizer.onresult = function(event) {
+    // got results
     // the event holds the results
     if (typeof(event.results) === 'undefined') {
         //Something is wrong...
@@ -141,12 +149,14 @@ function startSpeechRecognier(auto){
         // get all the final detected text into an array
         var finalText = [];
         for(var j = 0; j < event.results[i].length; ++j) {
-          finalText.push(event.results[i][j].transcript);
+          // how confidente (between 0 and 1) is the service that the translation correct
+          var confidence = event.results[i][j].confidence.toFixed(4);
+          finalText.push("Confidence: " + confidence + " Result: " + event.results[i][j].transcript);
         }
 
-        // send to dom
-        showResult(finalText.join(', '));
-        console.log("final result:", finalText);
+        // send the final results to the page
+        showResult(finalText.join(' ⬤ '));
+        console.log("Final result:", finalText);
         document.getElementById('partials').innerHTML = "...";
       } else {
         // got partial result
@@ -222,6 +232,7 @@ function init() {
 }
 
 window.addEventListener('load', function() {
+  $.notify.defaults( { globalPosition: 'bottom left' } )
   loadLanguages();
   init();
   $('select').material_select();
