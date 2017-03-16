@@ -1,13 +1,15 @@
 /* global webkitSpeechRecognition:true $:true*/
-try {
-    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition || null;
-  }
-  catch(err) {
-    console.error("Starting Web Speech API Error:", err.message);
-    var SpeechRecognition = null;
-  }
 
-// ------------------------ WEB SPEECH API --------------------------
+// try to get SpeechRecognition
+try {
+  var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition || null;
+}
+catch(err) {
+  console.error("Starting Web Speech API Error:", err.message);
+  var SpeechRecognition = null;
+}
+
+// languages
 var langs ={
   "Afrikaans": "af-ZA",
   "Bahasa Indonesia": "id-ID",
@@ -81,6 +83,10 @@ var langs ={
   "ภาษาไทย": "th-TH"
 };
 
+/**
+* Initialize the Speech Recognition functions
+* @param {boolean} auto - Automatically start to listen after loading
+*/
 function startSpeechRecognier(auto){
   // state used to to start and stop the detection
   var state = {
@@ -187,6 +193,7 @@ function startSpeechRecognier(auto){
     }
   };
 
+  // auto start listening
   if(auto) {
     play.click();
   }
@@ -198,16 +205,23 @@ function startSpeechRecognier(auto){
   });
 }
 
-function showResult(command) {
+/**
+* Add the results to the page.
+* @param {string} result - The results to show.
+*/
+function showResult(result) {
   // show the result in the page
   var finals = document.getElementById('finals');
-  finals.innerHTML += '<li class="collection-item">' + command + '</li>';
+  finals.innerHTML += '<li class="collection-item">' + result + '</li>';
   // scroll to bottom after adding the text
   finals.scrollTop = finals.scrollHeight;
 }
 
+/**
+* Load the languages into the select options.
+*/
 function loadLanguages() {
-  // add the lanaguages to the page
+  // add the languages to the page
   var select = document.getElementById("langs");
   for (var lang in langs) {
     if (langs.hasOwnProperty(lang)) {
@@ -222,6 +236,9 @@ function loadLanguages() {
 
 // ----------------- INIT -------------------------
 
+/**
+* Call to initialize SpeechRecognition if supported.
+*/
 function init() {
   // initialize speechRecognition if supported
   if(SpeechRecognition === null){
