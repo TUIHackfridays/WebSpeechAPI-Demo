@@ -153,17 +153,21 @@ function startSpeechRecognier(auto){
     for (var i = event.resultIndex; i < event.results.length; ++i) {
       if(event.results[i].isFinal) {
         // get all the final detected text into an array
-        var finalText = [];
+        var finalText = [], list = [];
         for(var j = 0; j < event.results[i].length; ++j) {
           // how confidente (between 0 and 1) is the service that the translation correct
           var confidence = event.results[i][j].confidence.toFixed(4);
-          finalText.push("Confidence: " + confidence + " Result: " + event.results[i][j].transcript);
+          var transcript = event.results[i][j].transcript;
+          list.push({"confidence": confidence, "text":transcript});
+          finalText.push("Confidence: " + confidence + " Result: " + transcript);
         }
 
         // send the final results to the page
         showResult(finalText.join(' ⬤ '));
         console.log("Final result:", finalText);
         document.getElementById('partials').innerHTML = "...";
+
+        checkCommand(sortByConfidence(list));
       } else {
         // got partial result
         document.getElementById('partials').innerHTML = event.results[i][0].transcript;
@@ -234,6 +238,61 @@ function loadLanguages() {
   }
 }
 
+function sortByConfidence(list) {
+  list.sort(function(a, b) {
+    return a.confidence - b.confidence;
+  }).reverse();
+  // console.log("SORTED LIST:", list);
+  var sortedResult = list.map(function(obj) {
+    return obj.text;
+  });
+  return sortedResult;
+}
+
+function checkCommand(text) {
+  var triggerWord = "play";
+  var foundCommand = text.join(', ').toLowerCase().indexOf(triggerWord) !== -1;
+  if(foundCommand) {
+    var query = text[0].replace(triggerWord, "");
+    searchSpotify(query);
+  }
+}
+
+function searchSpotify(query) {
+  var xhr = new XMLHttpRequest();
+  var url = "https://api.spotify.com/v1/search?q="+encodeURIComponent(query)+"&type=track";
+  xhr.open('GET', url);
+  xhr.onload = function() {
+      if (xhr.status === 200) {
+        // console.log("response:", xhr.responseText);
+        var jsonRes = JSON.parse(xhr.responseText);
+        var queryRes = document.getElementById("queryRes");
+        if (jsonRes.tracks.items) {
+          var item = jsonRes.tracks.items[0];
+          if(item) {
+            var html = "";
+            var name = item.name ?  item.name : "-----";
+            html += "<p><strong>" + name + "</strong><p>";
+            var url = item.external_urls.spotify ?  item.external_urls.spotify : "#";
+            html += "<a href='"+url+"'>open in spotify</a><br />";
+            if(item.preview_url)
+              html += "<audio id='audio' src='"+item.preview_url+"' controls />";
+            queryRes.innerHTML = html;
+          } else {
+            queryRes.innerHTML = "Can't find results.";
+          }
+        } else {
+          queryRes.innerHTML = "Can't find results.";
+        }
+        // stop listening
+        document.getElementById('button-play').click();
+        // open modal
+        $('.modal').openModal();
+      }
+  };
+  xhr.send();
+}
+
 // ----------------- INIT -------------------------
 
 /**
@@ -253,4 +312,11 @@ window.addEventListener('load', function() {
   loadLanguages();
   init();
   $('select').material_select();
+  $('.modal-close').click(function(){
+    var sound = document.getElementById("audio");
+    if(sound) {
+      sound.pause();
+      sound.currentTime = 0;
+    }
+  });
 }, false);
