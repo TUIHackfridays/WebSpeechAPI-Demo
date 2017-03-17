@@ -14,3 +14,7 @@ Open [Chrome](https://www.google.com/chrome/browser/desktop/index.html) or [Chro
 
 ## Screenshot
 ![demo screenshot](./screenshot.jpg)
+
+
+### Note
+Try saying `play Daft Punk Get Lucky`. You can also try other artists and tracks just say `play` before it.

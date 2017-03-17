@@ -1,4 +1,4 @@
-/* global webkitSpeechRecognition:true $:true*/
+/* global webkitSpeechRecognition:true $:true searchSpotify:true*/
 
 // try to get SpeechRecognition
 try {
@@ -238,6 +238,11 @@ function loadLanguages() {
   }
 }
 
+/**
+* Returns an list ordered by confidence values, descending order.
+* @param {array} list - A list of objects containing the confidence and transcript values.
+* @return array - Ordered list
+*/
 function sortByConfidence(list) {
   list.sort(function(a, b) {
     return a.confidence - b.confidence;
@@ -249,48 +254,20 @@ function sortByConfidence(list) {
   return sortedResult;
 }
 
+/**
+* Find the trigger word to call the command.
+* @param {array} list - Ordered list of transcripts.
+*/
 function checkCommand(text) {
-  var triggerWord = "play";
-  var foundCommand = text.join(', ').toLowerCase().indexOf(triggerWord) !== -1;
-  if(foundCommand) {
-    var query = text[0].replace(triggerWord, "");
+  // trigger words to detect as commands
+  var triggerWords = ["play"];
+  var command = triggerWords.find(function(word) {
+    return text.join(', ').toLowerCase().indexOf(word.toLowerCase()) !== -1;
+  });
+  if(command && command == "play") {
+    var query = text[0].replace(command, "");
     searchSpotify(query);
   }
-}
-
-function searchSpotify(query) {
-  var xhr = new XMLHttpRequest();
-  var url = "https://api.spotify.com/v1/search?q="+encodeURIComponent(query)+"&type=track";
-  xhr.open('GET', url);
-  xhr.onload = function() {
-      if (xhr.status === 200) {
-        // console.log("response:", xhr.responseText);
-        var jsonRes = JSON.parse(xhr.responseText);
-        var queryRes = document.getElementById("queryRes");
-        if (jsonRes.tracks.items) {
-          var item = jsonRes.tracks.items[0];
-          if(item) {
-            var html = "";
-            var name = item.name ?  item.name : "-----";
-            html += "<p><strong>" + name + "</strong><p>";
-            var url = item.external_urls.spotify ?  item.external_urls.spotify : "#";
-            html += "<a href='"+url+"'>open in spotify</a><br />";
-            if(item.preview_url)
-              html += "<audio id='audio' src='"+item.preview_url+"' controls />";
-            queryRes.innerHTML = html;
-          } else {
-            queryRes.innerHTML = "Can't find results.";
-          }
-        } else {
-          queryRes.innerHTML = "Can't find results.";
-        }
-        // stop listening
-        document.getElementById('button-play').click();
-        // open modal
-        $('.modal').openModal();
-      }
-  };
-  xhr.send();
 }
 
 // ----------------- INIT -------------------------
@@ -312,11 +289,4 @@ window.addEventListener('load', function() {
   loadLanguages();
   init();
   $('select').material_select();
-  $('.modal-close').click(function(){
-    var sound = document.getElementById("audio");
-    if(sound) {
-      sound.pause();
-      sound.currentTime = 0;
-    }
-  });
 }, false);
